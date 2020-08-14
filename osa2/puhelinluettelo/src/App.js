@@ -3,12 +3,29 @@ import personService from './services/personService'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
+import ErrorMessage from './components/ErrorMessage'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [notification, setNotification] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
+
+  const showNotification = text => {
+    setNotification(text)
+    setTimeout(() => {
+      setNotification(null)
+    }, 3000)
+  }
+  const showError = text => {
+    setErrorMessage(text)
+    setTimeout(() => {
+      setErrorMessage(null)
+    }, 6000)
+  }
 
   const addPerson = event => {
     event.preventDefault()
@@ -31,24 +48,43 @@ const App = () => {
         name: newName,
         number: newNumber,
       }
-      personService.create(newPerson).then(returnedPerson => {
-        setPersons(persons.concat(returnedPerson))
-        setNewName('')
-        setNewNumber('')
-      })
+      personService
+        .create(newPerson)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+          setNewName('')
+          setNewNumber('')
+          showNotification(`${returnedPerson.name} added.`)
+        })
+        .catch(error => {
+          showError('Create operation failed.')
+        })
     }
   }
 
-  const remove = id => {
-    personService.remove(id).then(() => {
-      setPersons(persons.filter(p => p.id !== id))
-    })
+  const remove = person => {
+    personService
+      .remove(person.id)
+      .then(() => {
+        setPersons(persons.filter(p => p.id !== person.id))
+        showNotification(`${person.name} deleted`)
+      })
+      .catch(error => {
+        showError('Delete operation failed.')
+      })
   }
 
   const update = (id, changedPerson) => {
-    personService.update(id, changedPerson).then(returnedPerson => {
-      setPersons(persons.map(p => (p.id !== id ? p : returnedPerson)))
-    })
+    personService
+      .update(id, changedPerson)
+      .then(returnedPerson => {
+        setPersons(persons.map(p => (p.id !== id ? p : returnedPerson)))
+        showNotification(`${returnedPerson.name} updated.`)
+      })
+      .catch(error => {
+        showError('Update failed. Person not found.')
+        setPersons(persons.filter(p => p.id !== id))
+      })
   }
 
   useEffect(() => {
@@ -59,7 +95,8 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1> <Notification message={notification} />
+      <ErrorMessage message={errorMessage} />
       <Filter
         filter={filter}
         onChange={event => setFilter(event.target.value)}

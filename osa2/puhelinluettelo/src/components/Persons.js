@@ -7,7 +7,7 @@ const Persons = ({ persons, remove }) => {
         return (
           <li key={p.id}>
             {p.name} {p.number}{' '}
-            <button onClick={() => remove(p.id)}>Delete</button>
+            <button onClick={() => remove(p)}>Delete</button>
           </li>
         )
       })}

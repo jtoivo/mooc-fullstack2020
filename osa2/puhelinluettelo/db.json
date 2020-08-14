@@ -2,7 +2,7 @@
   "persons": [
     {
       "name": "Arto Hellas",
-      "number": "123",
+      "number": "774575745745",
       "id": 1
     },
     {
@@ -21,14 +21,9 @@
       "id": 5
     },
     {
-      "name": "Asdfg Hjkl",
-      "number": "2451",
-      "id": 7
-    },
-    {
-      "name": "ABC DEF",
-      "number": "5454",
-      "id": 8
+      "name": "AS Ryti",
+      "number": "3699",
+      "id": 6
     }
   ]
 }
