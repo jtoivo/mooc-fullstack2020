@@ -24,7 +24,7 @@ const App = () => {
     setErrorMessage(text)
     setTimeout(() => {
       setErrorMessage(null)
-    }, 6000)
+    }, 7000)
   }
 
   const addPerson = event => {
@@ -57,7 +57,7 @@ const App = () => {
           showNotification(`${returnedPerson.name} added.`)
         })
         .catch(error => {
-          showError('Create operation failed.')
+          showError(`Adding new person failed: ${error.response.data.error}`)
         })
     }
   }
@@ -70,7 +70,7 @@ const App = () => {
         showNotification(`${person.name} deleted`)
       })
       .catch(error => {
-        showError('Delete operation failed.')
+        showError(`Delete failed: ${error.response.data.error}`)
       })
   }
 
@@ -82,7 +82,8 @@ const App = () => {
         showNotification(`${returnedPerson.name} updated.`)
       })
       .catch(error => {
-        showError('Update failed. Person not found.')
+        console.log(error.response.data)
+        showError(`Update failed: ${error.response.data.error}`)
         setPersons(persons.filter(p => p.id !== id))
       })
   }
