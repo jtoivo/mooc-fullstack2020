@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "Aihe 2",
+  "author": "Tekijä 2",
+  "url": "http://bcbcbcbcbcgwg.gw",
+  "likes": 0
+}
