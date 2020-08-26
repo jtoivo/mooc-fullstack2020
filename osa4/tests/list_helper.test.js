@@ -64,3 +64,19 @@ describe('most blogs', () => {
         blogs: 3
       }))
 })
+
+describe('most likes', () => {
+  test('Empty list', () => expect(listHelper.mostLikes([])).toBe(null))
+  test('List of only one blog', () => expect(listHelper.mostLikes(oneBlog))
+    .toEqual(
+      {
+        author: 'Nimi',
+        likes: 45
+      }))
+  test('Multiple blogs', () => expect(listHelper.mostLikes(blogs))
+    .toEqual(
+      {
+        author: 'Edsger W. Dijkstra',
+        likes: 17
+      }))
+})
