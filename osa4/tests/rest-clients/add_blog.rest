@@ -1,9 +1,9 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjVmNDhmZjAxNzg0MmVlNTMyMGExY2M5YiIsImlhdCI6MTU5OTAzMzI0Nn0.28WuF6_eg_jcaFfCxxlNeALaGpS1fZjducGWdmags7Y
 
 {
-  "title": "Uutuus 2",
-  "author": "Jhuu Giu",
-  "url": "http://sadfr.uio",
-  "likes": 0
+  "title": "ffrfrffrfrfr",
+  "author": "ffrfr",
+  "url": "http://yrjwe.uio"
 }

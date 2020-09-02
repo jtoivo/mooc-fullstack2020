@@ -1,5 +1,6 @@
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 
 const initialBlogs = [
   { title: 'React patterns', author: 'Michael Chan', url: 'https://reactpatterns.com/', likes: 7 },
@@ -8,6 +9,11 @@ const initialBlogs = [
   { title: 'First class tests', author: 'Robert C. Martin', url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll', likes: 10 },
   { title: 'TDD harms architecture', author: 'Robert C. Martin', url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html', likes: 0 },
   { title: 'Type wars', author: 'Robert C. Martin', url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html', likes: 2 }
+]
+
+const initialUsers = [
+  { username: 'test', name: 'Tester' },
+  { username: 'user2', name: 'Some User' }
 ]
 
 const nonExistingId = async () => {
@@ -27,4 +33,14 @@ const usersInDb = async () => {
   return users.map(u => u.toJSON())
 }
 
-module.exports = { initialBlogs, nonExistingId, blogsInDb, usersInDb }
+const getToken = async () => {
+  const user = await User.findOne({ username: 'test' })
+  return jwt.sign(
+    {
+      username: user.username,
+      id: user._id
+    },
+    process.env.SECRET)
+}
+
+module.exports = { initialBlogs, initialUsers, nonExistingId, blogsInDb, usersInDb, getToken }

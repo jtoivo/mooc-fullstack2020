@@ -1,17 +1,20 @@
 const supertest = require('supertest')
 const mongoose = require('mongoose')
 const helper = require('./test_helper')
+const Blog = require('../models/blog')
+const User = require('../models/user')
 const app = require('../app')
 const api = supertest(app)
-const Blog = require('../models/blog')
 
-beforeAll(async () => {
-  jest.setTimeout(20000)
-})
+// beforeAll(async () => {
+//   jest.setTimeout(20000)
+// })
 
 beforeEach(async () => {
   await Blog.deleteMany({})
   await Blog.insertMany(helper.initialBlogs)
+  await User.deleteMany({})
+  await User.insertMany(helper.initialUsers)
 })
 
 describe('getting blogs', () => {
@@ -58,6 +61,7 @@ describe('adding a blog', () => {
     }
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${await helper.getToken()}`)
       .send(newBlog)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -77,6 +81,7 @@ describe('adding a blog', () => {
     }
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${await helper.getToken()}`)
       .send(newBlog)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -87,7 +92,17 @@ describe('adding a blog', () => {
     const addedBlog = blogsInDb.find(b => b.title === 'A blog without likes property')
     expect(addedBlog.likes).toBe(0)
   })
-
+  test('missing token will return 401', async () => {
+    const newBlog = {
+      title: 'A new title',
+      author: 'Some Name',
+      url: 'qwerty',
+    }
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
+  })
   test('missing title will return 400', async () => {
     const newBlog = {
       author: 'No Title',
