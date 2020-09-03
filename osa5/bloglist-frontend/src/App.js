@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -11,6 +12,8 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [notification, setNotification] = useState(null)
+  const [notificationType, setNotificationType] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -27,18 +30,34 @@ const App = () => {
     }
   }, [])
 
+  const showNotification = (text) => {
+    setNotification(text)
+    setNotificationType('info')
+    setTimeout(() => {
+      setNotification(null)
+    }, 3000)
+  }
+  const showError = (text) => {
+    setNotification(text)
+    setNotificationType('error')
+    setTimeout(() => {
+      setNotification(null)
+    }, 6000)
+  }
+
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
       const user = await loginService.login({ username, password })
       blogService.setToken(user.token)
       window.localStorage.setItem('blogAppUser', JSON.stringify(user))
-
       setUser(user)
       setUsername('')
       setPassword('')
     }
-    catch{ }
+    catch{
+      showError('Invalid username or password.')
+    }
   }
   const logout = () => {
     window.localStorage.removeItem('blogAppUser')
@@ -46,15 +65,22 @@ const App = () => {
   }
 
   const addBlog = async (event) => {
-    event.preventDefault()
-    const newBlog = { title, author, url }
-    const addedBlog = await blogService.create(newBlog)
-    setBlogs(blogs.concat(addedBlog))
+    try {
+      event.preventDefault()
+      const newBlog = { title, author, url }
+      const addedBlog = await blogService.create(newBlog)
+      setBlogs(blogs.concat(addedBlog))
+      showNotification(`'${addedBlog.title}' added`)
+    }
+    catch (ex) {
+      showError(`Adding blog failed: ${ex.message}`)
+    }
   }
 
-  return (
-    (user === null) ?
+  if (user === null) {
+    return (
       <div>
+        <Notification message={notification} type={notificationType} />
         <h2>Login</h2>
         <form onSubmit={handleLogin}>
           <div>
@@ -77,8 +103,13 @@ const App = () => {
           </div>
           <button type="submit">login</button>
         </form>
-      </div> :
+      </div>
+    )
+  }
+  else {
+    return (
       <div>
+        <Notification message={notification} type={notificationType} />
         <h2>Blogs</h2>
         <p>{user.name} logged in <button onClick={() => logout()} >Logout</button></p>
         <form onSubmit={addBlog}>
@@ -100,7 +131,8 @@ const App = () => {
           <Blog key={blog.id} blog={blog} />
         )}
       </div>
-  )
+    )
+  }
 }
 
 export default App
