@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -9,11 +10,9 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [notification, setNotification] = useState(null)
   const [notificationType, setNotificationType] = useState(null)
+  const [blogFormVisible, setBlogFormVisible] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -64,18 +63,20 @@ const App = () => {
     window.location.reload()
   }
 
-  const addBlog = async (event) => {
+  const addBlog = async (blogObject) => {
     try {
-      event.preventDefault()
-      const newBlog = { title, author, url }
-      const addedBlog = await blogService.create(newBlog)
+      const addedBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(addedBlog))
       showNotification(`'${addedBlog.title}' added`)
+      setBlogFormVisible(false)
     }
     catch (ex) {
       showError(`Adding blog failed: ${ex.message}`)
     }
   }
+
+  const hideWhenVisible = { display: blogFormVisible ? 'none' : '' }
+  const showWhenVisible = { display: blogFormVisible ? '' : 'none' }
 
   if (user === null) {
     return (
@@ -112,24 +113,18 @@ const App = () => {
         <Notification message={notification} type={notificationType} />
         <h2>Blogs</h2>
         <p>{user.name} logged in <button onClick={() => logout()} >Logout</button></p>
-        <form onSubmit={addBlog}>
-          Title<input
-            value={title}
-            onChange={({ target }) => setTitle(target.value)}
-          /><br />
-          Author<input
-            value={author}
-            onChange={({ target }) => setAuthor(target.value)}
-          /><br />
-          Url<input
-            value={url}
-            onChange={({ target }) => setUrl(target.value)}
-          /><br />
-          <button type="submit">Add</button>
-        </form><br />
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
-        )}
+        <div style={hideWhenVisible}>
+          <button onClick={() => { setBlogFormVisible(true) }}>New blog</button>
+        </div>
+        <div style={showWhenVisible}>
+          <BlogForm createBlog={addBlog} />
+          <button onClick={() => { setBlogFormVisible(false) }}>Cancel</button>
+        </div>
+        {
+          blogs.map(blog =>
+            <Blog key={blog.id} blog={blog} />
+          )
+        }
       </div>
     )
   }
