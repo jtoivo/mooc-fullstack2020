@@ -54,7 +54,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     }
-    catch{
+    catch (ex) {
       showError('Invalid username or password.')
     }
   }
@@ -70,7 +70,7 @@ const App = () => {
       showNotification(`'${addedBlog.title}' added`)
       setBlogFormVisible(false)
     }
-    catch {
+    catch (ex) {
       showError('Adding blog failed.')
     }
   }
@@ -97,8 +97,7 @@ const App = () => {
       await blogService.remove(blog.id)
       setBlogs(blogs.filter(b => b.id !== blog.id))
     }
-    catch
-    {
+    catch (ex) {
       showError('Removing the blog failed.')
     }
   }
@@ -114,7 +113,7 @@ const App = () => {
         <form onSubmit={handleLogin}>
           <div>
             username
-          <input
+            <input
               type="text"
               value={username}
               name="Username"
@@ -123,7 +122,7 @@ const App = () => {
           </div>
           <div>
             password
-          <input
+            <input
               type="password"
               value={password}
               name="Password"
