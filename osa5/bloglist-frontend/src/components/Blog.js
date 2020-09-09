@@ -1,14 +1,18 @@
 import React, { useState } from 'react'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, handleLike }) => {
   const [showDetails, setShowDetails] = useState(false)
   const [buttonText, setButtonText] = useState('view')
 
   const detailsVisibility = { display: showDetails ? '' : 'none' }
 
-  const showOrHide = (target) => {
+  const showOrHide = () => {
     setShowDetails(!showDetails)
     setButtonText(showDetails ? 'view' : 'hide')
+  }
+
+  const addLike = async () => {
+    await handleLike(blog)
   }
 
   const blogStyle = {
@@ -24,7 +28,7 @@ const Blog = ({ blog }) => {
       <button onClick={showOrHide}>{buttonText}</button>
       <div style={detailsVisibility}>
         {blog.url}<br />
-        {blog.likes} <button>like</button><br />
+        {blog.likes} <button onClick={addLike}>like</button><br />
         {blog.user.name}
       </div >
     </div>
