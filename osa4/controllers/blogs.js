@@ -12,7 +12,7 @@ blogsRouter.get('/', async (request, response) => {
 
 blogsRouter.post('/', async (request, response) => {
   const body = request.body
-  if (body.title === undefined || body.url === undefined) {
+  if (!(body.title && body.url)) {
     response.status(400).json({ error: 'Title or url missing.' })
   }
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
@@ -43,6 +43,7 @@ blogsRouter.put('/:id', async (request, response) => {
     author: body.author,
     url: body.url,
     likes: body.likes,
+    user: body.user
   }
   const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
   response.json(updatedBlog.toJSON())
