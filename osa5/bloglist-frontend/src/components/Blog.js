@@ -30,14 +30,14 @@ const Blog = ({ blog, username, handleLike, handleRemove }) => {
   const removeStyle = { display: blog.user.username === username ? '' : 'none' }
 
   return (
-    <div style={blogStyle}>
+    <div className='blog' style={blogStyle}>
       {blog.title} {blog.author}
-      <button onClick={showOrHide}>{buttonText}</button>
+      <button className='details-button' onClick={showOrHide}>{buttonText}</button>
       <div className='details' style={detailsStyle}>
         <div className='url'>{blog.url}</div>
-        <div className='likes'>likes {blog.likes} <button onClick={addLike}>like</button></div>
+        <div className='likes'>likes: {blog.likes} <button className='like-button' onClick={addLike}>like</button></div>
         <div>{blog.user.name}</div>
-        <button style={removeStyle} onClick={remove}>remove</button>
+        <button className='remove-button' style={removeStyle} onClick={remove}>remove</button>
       </div >
     </div>
   )
