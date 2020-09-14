@@ -17,11 +17,10 @@ const counterReducer = (state = initialState, action) => {
       state = { ...state, bad: state.bad + 1 }
       return state
     case 'ZERO':
-      state = { good: 0, ok: 0, bad: 0 }
+      state = { ...initialState }
       return state
     default: return state
   }
-
 }
 
 export default counterReducer
