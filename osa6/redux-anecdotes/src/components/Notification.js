@@ -7,11 +7,11 @@ const Notification = () => {
     border: 'solid',
     padding: 10,
     borderWidth: 1,
-    display: !notification.message ? 'none' : ''
+    display: !notification ? 'none' : ''
   }
   return (
     <div style={style}>
-      {notification.message}
+      {notification}
     </div>
   )
 }
