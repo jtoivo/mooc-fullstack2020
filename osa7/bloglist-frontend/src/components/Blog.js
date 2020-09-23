@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { likeBlog, commentBlog, removeBlog } from '../reducers/blogsReducer'
+import { likeBlog, removeBlog } from '../reducers/blogsReducer'
 import CommentForm from '../components/CommentForm'
 import { useRouteMatch } from 'react-router-dom'
 
@@ -19,10 +19,6 @@ const Blog = () => {
 
   const removeStyle = { display: blog.user.username === username ? '' : 'none' }
 
-  const addComment = (comment) => {
-    dispatch(commentBlog(blog, comment))
-  }
-
   return (
     <div>
       <h2>{blog.title} {blog.author}</h2>
@@ -32,7 +28,7 @@ const Blog = () => {
       <button className='remove-button' style={removeStyle} onClick={() => dispatch(removeBlog(blog.id))}>remove</button>
       <div>
         <h3>Comments</h3>
-        <CommentForm createComment={addComment} />
+        <CommentForm blog={blog} />
         <ul>
           {blog.comments.map(c => {
             return <li key={c.id}>{c.content}</li>

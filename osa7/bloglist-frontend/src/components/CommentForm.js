@@ -1,20 +1,20 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useDispatch } from 'react-redux'
+import { commentBlog } from '../reducers/blogsReducer'
 
-const CommentForm = ({ createComment }) => {
-  const [comment, setComment] = useState('')
+const CommentForm = ({ blog }) => {
 
+  const dispatch = useDispatch()
   const addComment = (event) => {
     event.preventDefault()
-    createComment(comment)
+    dispatch(commentBlog(blog, event.target.comment.value))
+    event.target.comment.value = ''
   }
 
   return (
     <div>
       <form onSubmit={addComment}>
-        <input
-          value={comment}
-          onChange={({ target }) => setComment(target.value)}
-        /><button type="submit">add comment</button>
+        <input name='comment' /><button type="submit">add comment</button>
       </form><br /></div>
   )
 }
