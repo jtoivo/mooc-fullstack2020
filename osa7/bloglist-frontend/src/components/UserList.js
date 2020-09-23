@@ -15,17 +15,19 @@ const UserList = () => {
   return (
     <div>
       <h3>Users</h3>
-      <ul>
-        {
-          users.map(user => {
-            return (
-              <li key={user.id}>
-                <Link to={`/users/${user.id}`}>{user.name}</Link> {user.blogs.length}
-              </li>
-            )
-          })
-        }
-      </ul>
+      <table><thead>
+        <tr><th></th><th>Blogs</th></tr></thead><tbody>
+          {
+            users.map(user => {
+              return (
+                <tr key={user.id}>
+                  <td><Link to={`/users/${user.id}`}>{user.name}</Link></td>
+                  <td>{user.blogs.length}</td>
+                </tr>
+              )
+            })
+          }</tbody>
+      </table>
     </div>
   )
 }

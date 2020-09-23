@@ -25,10 +25,15 @@ const update = async (blog) => {
   return response.data
 }
 
+const comment = async (id, comment) => {
+  const response = await axios.post(`${baseUrl}/${id}/comments`, comment)
+  return response.data
+}
+
 const remove = async (id) => {
   const response = await axios.delete(`${baseUrl}/${id}`, config)
   return response.data
 }
 
 
-export default { setToken, getAll, create, update, remove }
+export default { setToken, getAll, create, update, comment, remove }

@@ -1,43 +1,46 @@
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { likeBlog, removeBlog } from '../reducers/blogsReducer'
-import PropTypes from 'prop-types'
+import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { likeBlog, commentBlog, removeBlog } from '../reducers/blogsReducer'
+import CommentForm from '../components/CommentForm'
+import { useRouteMatch } from 'react-router-dom'
 
-const Blog = ({ blog, username }) => {
-  const [showDetails, setShowDetails] = useState(false)
-  const [buttonText, setButtonText] = useState('view')
-
+const Blog = () => {
   const dispatch = useDispatch()
 
-  const showOrHide = () => {
-    setShowDetails(!showDetails)
-    setButtonText(showDetails ? 'view' : 'hide')
-  }
+  const blogs = useSelector(state => state.blogs)
+  const username = useSelector(state => state.user.username)
 
-  const blogStyle = {
-    padding: 8,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
-  const detailsStyle = { display: showDetails ? '' : 'none' }
+  const match = useRouteMatch('/blogs/:id')
+  const blog = match
+    ? blogs.find(b => b.id === match.params.id)
+    : null
+
+  if (!username || !blog) return null
+
   const removeStyle = { display: blog.user.username === username ? '' : 'none' }
 
+  const addComment = (comment) => {
+    dispatch(commentBlog(blog, comment))
+  }
+
   return (
-    <div className='blog' style={blogStyle}>
-      {blog.title} {blog.author}
-      <button className='details-button' onClick={showOrHide}>{buttonText}</button>
-      <div className='details' style={detailsStyle}>
-        <div className='url'>{blog.url}</div>
-        <div className='likes'>likes: {blog.likes} <button className='like-button' onClick={() => dispatch(likeBlog(blog))}>like</button></div>
-        <div>{blog.user.name}</div>
-        <button className='remove-button' style={removeStyle} onClick={() => dispatch(removeBlog(blog.id))}>remove</button>
-      </div >
+    <div>
+      <h2>{blog.title} {blog.author}</h2>
+      <div className='url'><a href={blog.url}>{blog.url}</a> </div>
+      <div className='likes'>likes: {blog.likes} <button className='like-button' onClick={() => dispatch(likeBlog(blog))}>like</button></div>
+      <div>{blog.user.name}</div>
+      <button className='remove-button' style={removeStyle} onClick={() => dispatch(removeBlog(blog.id))}>remove</button>
+      <div>
+        <h3>Comments</h3>
+        <CommentForm createComment={addComment} />
+        <ul>
+          {blog.comments.map(c => {
+            return <li key={c.id}>{c.content}</li>
+          })}
+        </ul>
+      </div>
     </div>
   )
 }
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  username: PropTypes.string.isRequired
-}
+
 export default Blog
