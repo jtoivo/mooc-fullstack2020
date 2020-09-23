@@ -1,47 +1,39 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useDispatch } from 'react-redux'
 import { login } from '../reducers/loginReducer'
+import { Form, Button, FormGroup, FormLabel } from 'react-bootstrap'
 
 const Login = () => {
-
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
 
   const dispatch = useDispatch()
 
   const handleLogin = (e) => {
     e.preventDefault()
-    dispatch(login({ username, password }))
-    setUsername('')
-    setPassword('')
+    dispatch(login({
+      username: e.target.username.value,
+      password: e.target.password.value
+    }))
+    e.target.username.value = ''
+    e.target.password.value = ''
   }
 
   return (
-    <div>
+    <div className="container">
       <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          username
-            <input
-            id='username'
+      <Form onSubmit={handleLogin}>
+        <FormGroup>
+          <FormLabel>username</FormLabel>
+          <Form.Control
             type="text"
-            value={username}
-            name="Username"
-            onChange={({ target }) => setUsername(target.value)}
+            name="username"
           />
-        </div>
-        <div>
-          password
-            <input
-            id='password'
+          <FormLabel>password</FormLabel>
+          <Form.Control
             type="password"
-            value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
+            name="password"
           />
-        </div>
-        <button id='login-button' type="submit">login</button>
-      </form>
+          <Button variant='primary' type="submit">login</Button>
+        </FormGroup></Form>
     </div>)
 }
 

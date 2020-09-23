@@ -3,18 +3,18 @@ import { setNotification, setErrorMessage } from '../reducers/notificationReduce
 
 const blogsReducer = (state = [], action) => {
   switch (action.type) {
-    case 'INIT_BLOGS':
-      return action.data.blogs.sort((a, b) => b.likes - a.likes)
-    case 'CREATE_BLOG':
-      return state.concat(action.data.blog)
-    case 'UPDATE_BLOG':
-      return state.map(b => b.id !== action.data.blog.id ? b : action.data.blog).sort((a, b) => b.likes - a.likes)
-    case 'COMMENT_BLOG':
-      return state.map(b => b.id !== action.data.blog.id ? b : action.data.blog)
-    case 'REMOVE_BLOG':
-      return state.filter(b => b.id !== action.data.id)
-    default:
-      return state
+  case 'INIT_BLOGS':
+    return action.data.blogs.sort((a, b) => b.likes - a.likes)
+  case 'CREATE_BLOG':
+    return state.concat(action.data.blog)
+  case 'UPDATE_BLOG':
+    return state.map(b => b.id !== action.data.blog.id ? b : action.data.blog).sort((a, b) => b.likes - a.likes)
+  case 'COMMENT_BLOG':
+    return state.map(b => b.id !== action.data.blog.id ? b : action.data.blog)
+  case 'REMOVE_BLOG':
+    return state.filter(b => b.id !== action.data.id)
+  default:
+    return state
   }
 }
 

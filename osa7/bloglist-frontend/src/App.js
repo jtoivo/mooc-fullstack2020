@@ -11,6 +11,7 @@ import { logout, checkIfLoggedIn } from './reducers/loginReducer'
 import Togglable from './components/Togglable'
 import UserList from './components/UserList'
 import { Switch, Route, Link } from 'react-router-dom'
+import { Button, Nav, Navbar } from 'react-bootstrap'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -43,14 +44,25 @@ const App = () => {
   }
   else {
     return (
-      <div>
-        <div>
-          <Link style={menuStyle} to='/'>blogs</Link>
-          <Link style={menuStyle} to='/users'>users</Link>
-          {user.name} logged in <button onClick={() => dispatch(logout())} >Logout</button>
-        </div>
+      // eslint-disable-next-line react/no-unknown-property
+      <div className="container">
+        <Navbar style={{ 'marginBottom': 15 }} collapseOnSelect expand="lg" bg="dark" variant="light">
+          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Collapse id="responsive-navbar-nav">
+            <Nav className="mr-auto">
+              <Nav.Link href="#" as="span">
+                <Link style={menuStyle} to='/'>blogs</Link>
+              </Nav.Link>
+              <Nav.Link href="#" as="span">
+                <Link style={menuStyle} to='/users'>users</Link>
+              </Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
+          <div style={{ 'color': 'white' }} >{user.name} logged in
+            <Button style={{ 'marginLeft': 5 }} onClick={() => dispatch(logout())} >Logout</Button>
+          </div>
+        </Navbar>
         <Notification />
-        <h2>Blogs</h2>
         <Switch>
           <Route path='/blogs/:id'>
             <Blog />
