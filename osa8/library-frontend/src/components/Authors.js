@@ -23,7 +23,6 @@ const Authors = props => {
     e.preventDefault()
     const name = e.target.name.value
     const year = e.target.year.value
-    console.log(name, year)
     if (name && Number.isInteger(Number(year))) {
       updateAuthor({ variables: { name, year: Number(year) } })
       e.target.name.value = ''
