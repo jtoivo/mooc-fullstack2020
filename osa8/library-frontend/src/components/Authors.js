@@ -17,7 +17,7 @@ const Authors = props => {
     return <div>loading...</div>
   }
 
-  const authors = result.data.allAuthors
+  const authors = result.data.allAuthors ? result.data.allAuthors : []
 
   const update = e => {
     e.preventDefault()

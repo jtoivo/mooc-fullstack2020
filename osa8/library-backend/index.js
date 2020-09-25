@@ -82,7 +82,7 @@ const resolvers = {
         author = new Author( { name: args.author })
         author = await author.save()
       }
-      const book = new Book({ ...args, author: author.id })
+      const book = new Book({ ...args, author })
       return await book.save()
     },
     editAuthor: async (root, args) => {
