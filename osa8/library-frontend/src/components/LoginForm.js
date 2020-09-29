@@ -7,7 +7,7 @@ const LoginForm = ({ show, setError, setToken, setPage }) => {
   const [password, setPassword] = useState('')
 
   const [login, result] = useMutation(LOGIN, {
-    onError: (error) => {
+    onError: error => {
       setError(error.graphQLErrors[0].message)
     },
   })
@@ -23,7 +23,7 @@ const LoginForm = ({ show, setError, setToken, setPage }) => {
 
   if (!show) return null
 
-  const submit = async (event) => {
+  const submit = async event => {
     event.preventDefault()
     login({ variables: { username, password } })
   }

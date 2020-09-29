@@ -22,7 +22,7 @@ mongoose
   .then(() => {
     console.log('connected to MongoDB')
   })
-  .catch((error) => {
+  .catch(error => {
     console.log('error connection to MongoDB:', error.message)
   })
 
@@ -47,6 +47,7 @@ const typeDefs = gql`
     authorCount: Int!
     allBooks(author: String, genre: String): [Book!]
     allAuthors: [Author!]
+    allGenres: [String!]
     me: User
   }
 
@@ -86,17 +87,25 @@ const resolvers = {
 
       // How to query this...?
       if (args.author) {
-        books = books.filter((b) => b.author.name === args.author)
+        books = books.filter(b => b.author.name === args.author)
       }
       return books
     },
     allAuthors: () => Author.find({}),
+    allGenres: async () => {
+      const books = await Book.find({})
+      let genres = []
+      books.forEach(b => {
+        genres.push(...b.genres)
+      })
+      return [...new Set(genres)]
+    },
     me: (root, args, context) => {
       return context.currentUser
     },
   },
   Author: {
-    bookCount: (root) => Book.countDocuments({ author: root.id }),
+    bookCount: root => Book.countDocuments({ author: root.id }),
   },
   Mutation: {
     addBook: async (root, args, context) => {
@@ -137,7 +146,7 @@ const resolvers = {
     },
     createUser: (root, args) => {
       const user = new User({ username: args.username })
-      return user.save().catch((error) => {
+      return user.save().catch(error => {
         throw new UserInputError({ invalid: args })
       })
     },
