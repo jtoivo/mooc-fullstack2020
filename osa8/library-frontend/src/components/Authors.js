@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/client'
 import { useMutation } from '@apollo/client'
 import { ALL_AUTHORS, UPDATE_AUTHOR } from '../queries'
 
-const Authors = props => {
+const Authors = (props) => {
   const [updateAuthor] = useMutation(UPDATE_AUTHOR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
   })
@@ -19,14 +19,18 @@ const Authors = props => {
 
   const authors = result.data.allAuthors ? result.data.allAuthors : []
 
-  const update = e => {
+  const update = async (e) => {
     e.preventDefault()
     const name = e.target.name.value
     const year = e.target.year.value
     if (name && Number.isInteger(Number(year))) {
-      updateAuthor({ variables: { name, year: Number(year) } })
-      e.target.name.value = ''
-      e.target.year.value = ''
+      try {
+        await updateAuthor({ variables: { name, year: Number(year) } })
+        e.target.name.value = ''
+        e.target.year.value = ''
+      } catch (error) {
+        props.setError(error.message)
+      }
     }
   }
 
@@ -40,7 +44,7 @@ const Authors = props => {
             <th>born</th>
             <th>books</th>
           </tr>
-          {authors.map(a => (
+          {authors.map((a) => (
             <tr key={a.name}>
               <td>{a.name}</td>
               <td>{a.born}</td>
@@ -52,7 +56,7 @@ const Authors = props => {
       <h3>Set birthyear</h3>
       <form onSubmit={update}>
         <select name='name'>
-          {authors.map(a => {
+          {authors.map((a) => {
             return <option key={a.name}>{a.name}</option>
           })}
         </select>
