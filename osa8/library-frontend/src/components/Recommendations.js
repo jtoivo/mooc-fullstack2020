@@ -4,7 +4,9 @@ import { ALL_BOOKS, ME } from '../queries'
 
 const Recommendations = props => {
   const meResult = useQuery(ME)
-  const [getBooks, booksResult] = useLazyQuery(ALL_BOOKS)
+  const [getBooks, booksResult] = useLazyQuery(ALL_BOOKS, {
+    fetchPolicy: 'no-cache',
+  })
 
   useEffect(() => {
     if (meResult.data && meResult.data.me) {
@@ -24,7 +26,7 @@ const Recommendations = props => {
     <table>
       <tbody>
         <tr>
-          <th></th>
+          <th>title</th>
           <th>author</th>
           <th>published</th>
         </tr>

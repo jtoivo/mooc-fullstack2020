@@ -6,7 +6,9 @@ const Books = props => {
   const [books, setBooks] = useState([])
   const [genre, setGenre] = useState('')
   const genresResult = useQuery(ALL_GENRES)
-  const [getBooks, result] = useLazyQuery(ALL_BOOKS)
+  const [getBooks, result] = useLazyQuery(ALL_BOOKS, {
+    fetchPolicy: 'no-cache',
+  })
 
   const showBooks = clickedGenre => {
     clickedGenre
@@ -14,6 +16,10 @@ const Books = props => {
       : getBooks()
     setGenre(clickedGenre)
   }
+
+  useEffect(() => {
+    showBooks('')
+  }, [genresResult.data]) // eslint-disable-line
 
   useEffect(() => {
     if (result.data) {
@@ -36,7 +42,7 @@ const Books = props => {
       <table>
         <tbody>
           <tr>
-            <th></th>
+            <th>title</th>
             <th>author</th>
             <th>published</th>
           </tr>
