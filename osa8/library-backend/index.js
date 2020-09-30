@@ -62,17 +62,14 @@ const typeDefs = gql`
     editAuthor(name: String!, setBornTo: Int!): Author
 
     createUser(username: String!, favoriteGenre: String!): User
-    login(username: String!, password: String!): Token
+    login(username: String!, password: String!): User
   }
 
   type User {
     username: String!
     favoriteGenre: String!
     id: ID!
-  }
-
-  type Token {
-    value: String!
+    token: String
   }
 `
 
@@ -82,7 +79,7 @@ const resolvers = {
     authorCount: () => Author.countDocuments(),
     allBooks: async (root, args) => {
       let books = await Book.find(
-        args.genre ? { genres: { $in: [args.genre] } } : {}
+        args.genre ? { genres: args.genre } : {}
       ).populate('author')
 
       // How to query this...?
@@ -145,7 +142,10 @@ const resolvers = {
       return author
     },
     createUser: (root, args) => {
-      const user = new User({ username: args.username })
+      const user = new User({
+        username: args.username,
+        favoriteGenre: args.favoriteGenre ? args.favoriteGenre : ''
+      })
       return user.save().catch(error => {
         throw new UserInputError({ invalid: args })
       })
@@ -161,7 +161,13 @@ const resolvers = {
         id: user._id,
       }
 
-      return { value: jwt.sign(userForToken, JWT_SECRET) }
+      const token = jwt.sign(userForToken, JWT_SECRET)
+
+      return {
+        username: user.username,
+        favoriteGenre: user.favoriteGenre,
+        token
+      }
     },
   },
 }

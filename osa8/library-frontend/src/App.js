@@ -8,14 +8,14 @@ import Recommendations from './components/Recommendations'
 
 const App = () => {
   const [page, setPage] = useState('authors')
-  const [token, setToken] = useState(null)
+  const [user, setUser] = useState(null)
   const [errorMessage, setError] = useState('')
   const client = useApolloClient()
 
   useEffect(() => {
-    const token = localStorage.getItem('library-user-token')
-    if (token) {
-      setToken(token)
+    const loggedUser = localStorage.getItem('library-user')
+    if (loggedUser) {
+      setUser(JSON.parse(loggedUser))
     }
   }, [])
 
@@ -26,7 +26,7 @@ const App = () => {
   }
 
   const logout = () => {
-    setToken(null)
+    setUser(null)
     localStorage.clear()
     client.resetStore()
   }
@@ -41,25 +41,25 @@ const App = () => {
         <button onClick={() => setPage('authors')}>authors</button>
         <button onClick={() => setPage('books')}>books</button>
         <button
-          style={{ display: token ? '' : 'none' }}
+          style={{ display: user ? '' : 'none' }}
           onClick={() => setPage('add')}
         >
           add book
         </button>
         <button
-          style={{ display: token ? '' : 'none' }}
+          style={{ display: user ? '' : 'none' }}
           onClick={() => setPage('recommendations')}
         >
           recommend
         </button>
         <button
-          style={{ display: !token ? '' : 'none' }}
+          style={{ display: !user ? '' : 'none' }}
           onClick={() => setPage('login')}
         >
           login
         </button>
         <button
-          style={{ display: token ? '' : 'none' }}
+          style={{ display: user ? '' : 'none' }}
           onClick={() => logout()}
         >
           logout
@@ -68,7 +68,7 @@ const App = () => {
       <Authors
         show={page === 'authors'}
         setError={setError}
-        loggedIn={token ? true : false}
+        loggedIn={user ? true : false}
       />
       <Books show={page === 'books'} setError={setError} />
       <NewBook show={page === 'add'} setError={setError} />
@@ -76,11 +76,12 @@ const App = () => {
         show={page === 'recommendations'}
         setError={setError}
         setPage={setPage}
+        user={user}
       />
       <LoginForm
         show={page === 'login'}
         setError={setError}
-        setToken={setToken}
+        setUser={setUser}
         setPage={setPage}
       />
     </div>
