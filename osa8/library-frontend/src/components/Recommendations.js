@@ -1,19 +1,15 @@
-import React, { useEffect } from 'react'
-import { useLazyQuery } from '@apollo/client'
+import React from 'react'
+import { useQuery } from '@apollo/client'
 import { ALL_BOOKS } from '../queries'
 
 const Recommendations = props => {
-  const [getBooks, result] = useLazyQuery(ALL_BOOKS, {
+  const result = useQuery(ALL_BOOKS, {
     fetchPolicy: 'no-cache',
+    skip: !props.user,
+    variables: { genreToSearch: props.user ? props.user.favoriteGenre : '' },
   })
 
-  useEffect(() => {
-    if (props.user) {
-      getBooks({ variables: { genreToSearch: props.user.favoriteGenre } })
-    }
-  }, [props.user]) // eslint-disable-line
-
-  if (!props.show) {
+  if (!props.show || !props.user) {
     return null
   }
 

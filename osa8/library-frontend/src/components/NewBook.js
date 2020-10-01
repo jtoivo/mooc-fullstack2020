@@ -23,7 +23,7 @@ const NewBook = props => {
         variables: { title, author, published: Number(published), genres },
       })
     } catch (error) {
-      props.setError(error.message)
+      props.showError(error.message)
     }
 
     setTitle('')

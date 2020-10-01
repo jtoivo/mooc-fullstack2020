@@ -31,12 +31,16 @@ const App = () => {
     client.resetStore()
   }
 
+  const showError = message => {
+    setError(message)
+    setTimeout(() => {
+      setError('')
+    }, 10000)
+  }
+
   return (
     <div>
-      <div style={errorStyle}>
-        {errorMessage}
-        <button onClick={() => setError('')}>ok</button>
-      </div>
+      <div style={errorStyle}>{errorMessage}</div>
       <div>
         <button onClick={() => setPage('authors')}>authors</button>
         <button onClick={() => setPage('books')}>books</button>
@@ -67,20 +71,20 @@ const App = () => {
       </div>
       <Authors
         show={page === 'authors'}
-        setError={setError}
+        showError={showError}
         loggedIn={user ? true : false}
       />
-      <Books show={page === 'books'} setError={setError} />
-      <NewBook show={page === 'add'} setError={setError} />
+      <Books show={page === 'books'} showError={showError} />
+      <NewBook show={page === 'add'} showError={showError} />
       <Recommendations
         show={page === 'recommendations'}
-        setError={setError}
+        showError={showError}
         setPage={setPage}
         user={user}
       />
       <LoginForm
         show={page === 'login'}
-        setError={setError}
+        showError={showError}
         setUser={setUser}
         setPage={setPage}
       />

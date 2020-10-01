@@ -26,10 +26,8 @@ const Authors = props => {
     if (name && Number.isInteger(Number(year))) {
       try {
         await updateAuthor({ variables: { name, year: Number(year) } })
-        e.target.name.value = ''
-        e.target.year.value = ''
       } catch (error) {
-        props.setError(error.message)
+        props.showError(error.message)
       }
     }
   }
