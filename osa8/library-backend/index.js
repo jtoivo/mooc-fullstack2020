@@ -42,6 +42,13 @@ const typeDefs = gql`
     id: ID!
   }
 
+  type User {
+    username: String!
+    favoriteGenre: String!
+    id: ID!
+    token: String
+  }
+
   type Query {
     bookCount: Int!
     authorCount: Int!
@@ -65,13 +72,13 @@ const typeDefs = gql`
     login(username: String!, password: String!): User
   }
 
-  type User {
-    username: String!
-    favoriteGenre: String!
-    id: ID!
-    token: String
+  type Subscription {
+    bookAdded: Book!
   }
 `
+
+const { PubSub } = require('apollo-server')
+const pubsub = new PubSub()
 
 const resolvers = {
   Query: {
@@ -88,7 +95,7 @@ const resolvers = {
       }
       return books
     },
-    allAuthors: () => Author.find({}),
+    allAuthors: () => Author.find({}).populate('books'),
     allGenres: async () => {
       const books = await Book.find({})
       let genres = []
@@ -102,7 +109,9 @@ const resolvers = {
     },
   },
   Author: {
-    bookCount: root => Book.countDocuments({ author: root.id }),
+    bookCount: root => {
+      return root.books.length
+    },
   },
   Mutation: {
     addBook: async (root, args, context) => {
@@ -115,8 +124,17 @@ const resolvers = {
           author = new Author({ name: args.author })
           author = await author.save()
         }
+
         const book = new Book({ ...args, author })
-        return await book.save()
+        const bookAdded = await book.save()
+
+        author.books = author.books
+          ? (author.books = author.books.concat(bookAdded.id))
+          : [bookAdded.id]
+        await author.save()
+
+        pubsub.publish('BOOK_ADDED', { bookAdded })
+        return bookAdded
       } catch (error) {
         throw new UserInputError(error.message, {
           invalidArgs: args,
@@ -144,7 +162,7 @@ const resolvers = {
     createUser: (root, args) => {
       const user = new User({
         username: args.username,
-        favoriteGenre: args.favoriteGenre ? args.favoriteGenre : ''
+        favoriteGenre: args.favoriteGenre ? args.favoriteGenre : '',
       })
       return user.save().catch(error => {
         throw new UserInputError({ invalid: args })
@@ -166,8 +184,13 @@ const resolvers = {
       return {
         username: user.username,
         favoriteGenre: user.favoriteGenre,
-        token
+        token,
       }
+    },
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator('BOOK_ADDED'),
     },
   },
 }
@@ -185,6 +208,7 @@ const server = new ApolloServer({
   },
 })
 
-server.listen().then(({ url }) => {
+server.listen().then(({ url, subscriptionsUrl }) => {
   console.log(`Server ready at ${url}`)
+  console.log(`Subscriptions ready at ${subscriptionsUrl}`)
 })
