@@ -44,5 +44,6 @@ try {
   const { height, weight } = parseBmiArgs(process.argv);
   console.log(calculateBmi(height, weight));
 } catch (e) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   console.log('Error:', e.message);
 }

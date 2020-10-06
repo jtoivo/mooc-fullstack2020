@@ -1,6 +1,4 @@
 {
   "prettier.semi": false,
-  "editor.formatOnSave": true,
-  "typescript.format.semicolons": "insert",
-  "javascript.format.semicolons": "insert"
+  "editor.formatOnSave": true
 }
