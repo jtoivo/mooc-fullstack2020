@@ -1,42 +1,42 @@
 interface Result {
-  periodLength: number,
-  trainingDays: number,
-  success: boolean,
-  rating: number,
-  ratingDescription: string,
-  target: number,
-  average: number;
+  periodLength: number
+  trainingDays: number
+  success: boolean
+  rating: number
+  ratingDescription: string
+  target: number
+  average: number
 }
 
 interface ExerciseInput {
-  target: number;
-  hours: number[];
+  target: number
+  hours: number[]
 }
 
 const parseExerciseArgs = (args: string[]): ExerciseInput => {
-  if (args.length < 4) throw new Error('Arguments missing.');
+  if (args.length < 4) throw new Error('Arguments missing.')
 
   if (args.slice(2).every(a => !isNaN(Number(a)))) {
     return {
       target: Number(args[2]),
-      hours: args.slice(3).map(s => Number(s))
-    };
+      hours: args.slice(3).map(s => Number(s)),
+    }
   } else {
-    throw new Error('Values must be numbers.');
+    throw new Error('All arguments must be numbers.')
   }
-};
+}
 
 const calculateExercises = (hours: number[], target: number): Result => {
-  const average = hours.reduce((a, b) => a + b, 0) / hours.length;
-  let rating = 2;
-  let ratingDescription = 'OK';
+  const average = hours.reduce((a, b) => a + b, 0) / hours.length
+  let rating = 2
+  let ratingDescription = 'OK'
 
   if (average / target < 0.75) {
-    rating = 1;
-    ratingDescription = 'Bad';
+    rating = 1
+    ratingDescription = 'Bad'
   } else if (average / target > 1.25) {
-    rating = 3;
-    ratingDescription = 'Good';
+    rating = 3
+    ratingDescription = 'Good'
   }
 
   return {
@@ -47,13 +47,12 @@ const calculateExercises = (hours: number[], target: number): Result => {
     ratingDescription,
     target,
     average,
-  };
-};
+  }
+}
 
 try {
-  const { target, hours } = parseExerciseArgs(process.argv);
-  console.log(calculateExercises(hours, target));
-}
-catch (e) {
-  console.log('Error:', e.message);
+  const { target, hours } = parseExerciseArgs(process.argv)
+  console.log(calculateExercises(hours, target))
+} catch (e) {
+  console.log('Error:', e.message)
 }
