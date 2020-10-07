@@ -20,9 +20,13 @@ app.get('/bmi', (req, res) => {
   }
 });
 
+interface ExerciseParams {
+  daily_exercises: number[];
+  target: number;
+}
+
 app.post('/exercises', (req, res) => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const { daily_exercises, target } = req.body;
+  const { daily_exercises, target } = req.body as ExerciseParams;
 
   if (!daily_exercises || !target) {
     res.status(400).json({ error: 'parameters missing' });
@@ -32,6 +36,7 @@ app.post('/exercises', (req, res) => {
     isNaN(Number(target))) {
     res.status(400).json({ error: 'malformatted parameters' });
   }
+
   const result = calculateExercises(daily_exercises, target);
   res.send(result);
 });

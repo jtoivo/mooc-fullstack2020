@@ -1,16 +1,16 @@
 interface Result {
-  periodLength: number
-  trainingDays: number
-  success: boolean
-  rating: number
-  ratingDescription: string
-  target: number
-  average: number
+  periodLength: number;
+  trainingDays: number;
+  success: boolean;
+  rating: number;
+  ratingDescription: string;
+  target: number;
+  average: number;
 }
 
 interface ExerciseInput {
-  target: number
-  hours: number[]
+  target: number;
+  hours: number[];
 }
 
 const parseExerciseArgs = (args: string[]): ExerciseInput => {
@@ -50,10 +50,12 @@ export const calculateExercises = (hours: number[], target: number): Result => {
   };
 };
 
-try {
-  const { target, hours } = parseExerciseArgs(process.argv);
-  console.log(calculateExercises(hours, target));
-} catch (e) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  console.log('Error:', e.message);
+if (!(process.argv.length === 3 && process.argv[2] === 'web')) {
+  try {
+    const { target, hours } = parseExerciseArgs(process.argv);
+    console.log(calculateExercises(hours, target));
+  } catch (e) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    console.log('Error:', e.message);
+  }
 }
