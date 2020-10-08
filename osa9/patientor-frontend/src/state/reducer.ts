@@ -50,5 +50,5 @@ export const setPatientDetails = (patient: Patient): Action => {
   return {
     type: "SET_PATIENT_DETAILS",
     payload: patient
-  }
+  };
 };

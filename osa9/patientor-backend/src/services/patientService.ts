@@ -1,8 +1,8 @@
-import patientsData from '../../data/patients.json';
+import patientsData from '../../data/patients';
 import { Patient, PublicPatient, NewPatientEntry } from '../types';
 import { Guid } from 'guid-typescript';
 
-const patients: Array<Patient> = patientsData as Array<Patient>;
+const patients: Array<Patient> = patientsData;
 
 const getPatients = (): PublicPatient[] => {
   return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
