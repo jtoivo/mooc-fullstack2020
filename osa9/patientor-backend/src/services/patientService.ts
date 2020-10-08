@@ -1,17 +1,25 @@
 import patientsData from '../../data/patients.json';
-import { Patient, PatientWithoutSsn, NewPatientEntry } from '../types';
+import { Patient, PublicPatient, NewPatientEntry } from '../types';
 import { Guid } from 'guid-typescript';
 
 const patients: Array<Patient> = patientsData as Array<Patient>;
 
-const getPatients = (): PatientWithoutSsn[] => {
+const getPatients = (): PublicPatient[] => {
   return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
     id,
     name,
     dateOfBirth,
     gender,
-    occupation
+    occupation,
   }));
+};
+
+const getPatientById = (id: string): Patient | undefined => {
+  const patient = patients.find(p => p.id === id);
+  if (patient && !patient.entries) {
+    patient.entries = [];
+  }
+  return patient;
 };
 
 const addPatient = (entry: NewPatientEntry): Patient => {
@@ -23,4 +31,4 @@ const addPatient = (entry: NewPatientEntry): Patient => {
   return newPatient;
 };
 
-export default { getPatients, addPatient };
+export default { getPatients, getPatientById, addPatient };
