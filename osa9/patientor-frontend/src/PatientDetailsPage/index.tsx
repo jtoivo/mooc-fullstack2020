@@ -5,15 +5,15 @@ import { Container, Icon } from "semantic-ui-react";
 import { Patient, Gender } from "../types";
 import { apiBaseUrl } from "../constants";
 import { useStateValue, setPatientDetails } from "../state";
+import EntryDetails from "./EntryDetails";
 
 const PatientPage: React.FC = () => {
-  const [{ patient }, dispatch] = useStateValue();
+  const [{ patient, diagnoses }, dispatch] = useStateValue();
 
   const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
     const fetchPatient = async () => {
-      console.log('fetching patient details');
       try {
         const { data: patientFromApi } = await axios.get<Patient>(`${apiBaseUrl}/patients/${id}`);
         dispatch(setPatientDetails(patientFromApi));
@@ -36,20 +36,14 @@ const PatientPage: React.FC = () => {
 
   return (
     <Container>
-      <h3>{patient?.name}<Icon name={genderIcon} /></h3>
+      <h3>{patient?.name}<Icon name={genderIcon} size="large" /></h3>
       <p>ssn: {patient?.ssn}</p>
       <p>occupation: {patient?.occupation}</p>
       <h4>Entries</h4>
+
       {patient?.entries.map(e => {
         return (
-          <div key={e.id}>
-            <p>{e.date} {e.description}</p>
-            <ul>
-              {e.diagnosisCodes?.map(d => {
-                return <li key={d}>{d}</li>;
-              })}
-            </ul>
-          </div>
+          <EntryDetails key={e.id} entry={e} diagnoses={diagnoses} />
         );
       })}
     </Container>
