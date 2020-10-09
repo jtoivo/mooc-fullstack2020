@@ -1,10 +1,10 @@
 import React from 'react';
-import { Diagnosis, Entry } from "../types";
+import { Entry } from "../types";
 import HealthCheckEntryDetails from "./HealthCheckEntryDetails";
 import HospitalEntryDetails from "./HospitalEntryDetails";
 import OccupationalEntryDetails from "./OccupationalEntryDetails";
 
-const EntryDetails: React.FC<{ entry: Entry; diagnoses: { [code: string]: Diagnosis } }> = ({ entry, diagnoses }) => {
+const EntryDetails: React.FC<{ entry: Entry }> = ({ entry }) => {
 
   const assertNever = (value: never): never => {
     throw new Error(`Unknown entry type: ${JSON.stringify(value)}`);
@@ -12,11 +12,11 @@ const EntryDetails: React.FC<{ entry: Entry; diagnoses: { [code: string]: Diagno
 
   switch (entry.type) {
     case "Hospital":
-      return <HospitalEntryDetails entry={entry} diagnoses={diagnoses} />;
+      return <HospitalEntryDetails entry={entry} />;
     case "HealthCheck":
-      return <HealthCheckEntryDetails entry={entry} diagnoses={diagnoses} />;
+      return <HealthCheckEntryDetails entry={entry} />;
     case "OccupationalHealthcare":
-      return <OccupationalEntryDetails entry={entry} diagnoses={diagnoses} />;
+      return <OccupationalEntryDetails entry={entry} />;
     default:
       return assertNever(entry);
   }

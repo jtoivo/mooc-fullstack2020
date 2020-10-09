@@ -1,21 +1,25 @@
 import React from 'react';
 import { Header, Icon, Segment } from 'semantic-ui-react';
-import { Diagnosis, HospitalEntry } from '../types';
+import { HospitalEntry } from '../types';
+import DiagnosisList from "./DiagnosisList";
 
-const HospitalEntryDetails: React.FC<{
-  entry: HospitalEntry;
-  diagnoses: { [code: string]: Diagnosis };
-}> = ({ entry, diagnoses }) => {
+const HospitalEntryDetails: React.FC<{ entry: HospitalEntry }> = ({ entry }) => {
+
+  const showDischarge = () => {
+    return entry.discharge
+      ? (
+        <div><h5>Discharge</h5>
+          <p>Date: {entry.discharge.date}<br />
+      Criteria: {entry.discharge.criteria}</p></div>)
+      : null;
+  };
 
   return (
     <Segment>
       <Header as="h4">{entry.date} <Icon name="hospital" size="big" /></Header>
       <p>{entry.description}</p>
-      <ul>
-        {entry.diagnosisCodes?.map(dc => {
-          return <li key={dc}>{dc} {diagnoses[dc].name}</li>;
-        })}
-      </ul>
+      <DiagnosisList diagnosisCodes={entry.diagnosisCodes} />
+      {showDischarge()}
     </Segment>);
 };
 

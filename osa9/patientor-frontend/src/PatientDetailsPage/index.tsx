@@ -8,7 +8,7 @@ import { useStateValue, setPatientDetails } from "../state";
 import EntryDetails from "./EntryDetails";
 
 const PatientPage: React.FC = () => {
-  const [{ patient, diagnoses }, dispatch] = useStateValue();
+  const [{ patient }, dispatch] = useStateValue();
 
   const { id } = useParams<{ id: string }>();
 
@@ -43,7 +43,7 @@ const PatientPage: React.FC = () => {
 
       {patient?.entries.map(e => {
         return (
-          <EntryDetails key={e.id} entry={e} diagnoses={diagnoses} />
+          <EntryDetails key={e.id} entry={e} />
         );
       })}
     </Container>
