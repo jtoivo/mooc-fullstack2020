@@ -26,4 +26,19 @@ router.post('/', (req, res) => {
   }
 });
 
+router.post('/:id/entries', (req, res) => {
+  try {
+    // TODO: add validation
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const entry = req.body;
+    const addedEntry = patientService.addEntry(req.params.id, entry);
+    console.log(addedEntry);
+    res.json(addedEntry);
+  }
+  catch (e) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    res.status(400).send(e.message);
+  }
+});
+
 export default router;
